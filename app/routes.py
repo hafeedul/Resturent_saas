@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, g, flash
 from flask import current_app as app
 from app import db
-from app.models import User, Restaurant, MenuItem
+from app.models import User, Restaurant, MenuItem, Order
 
 # The domain that hosts the main SaaS landing page
 # In production this might be 'restostitch.com', locally it's usually '127.0.0.1:5000' or 'localhost:5000'
@@ -207,10 +207,80 @@ def remove_from_cart(item_id):
         
     return redirect(url_for('cart'))
 
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    if g.is_main_domain or not g.restaurant:
+        return "Not found", 404
+        
+    customer_name = request.form.get('customer_name', '').strip()
+    if not customer_name:
+        flash("Please enter your name to place the order.")
+        return redirect(url_for('cart'))
+        
+    cart_items = session.get('cart', {})
+    if not cart_items:
+        flash("Your cart is empty.")
+        return redirect(url_for('cart'))
+        
+    # Calculate total and build items summary
+    total_price = 0.0
+    items_summary_list = []
+    
+    for item_id_str, quantity in cart_items.items():
+        try:
+            item_id = int(item_id_str)
+            item = db.session.get(MenuItem, item_id)
+            if item and item.restaurant_id == g.restaurant.id:
+                line_total = item.price * quantity
+                total_price += line_total
+                items_summary_list.append(f"{quantity}x {item.name}")
+        except ValueError:
+            continue
+            
+    if total_price == 0:
+        return redirect(url_for('cart'))
+        
+    # Create the Order
+    new_order = Order(
+        customer_name=customer_name,
+        items_summary=", ".join(items_summary_list),
+        total_price=total_price,
+        status="Pending",
+        restaurant_id=g.restaurant.id
+    )
+    db.session.add(new_order)
+    db.session.commit()
+    
+    # Clear the cart
+    session.pop('cart', None)
+    
+    return render_template('checkout_success.html', restaurant=g.restaurant, order=new_order)
+
 @app.route('/orders')
 def orders():
     if 'user_id' not in session: return redirect(url_for('login'))
-    return render_template('order.html')
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    restaurant_orders = Order.query.filter_by(restaurant_id=restaurant.id).order_by(Order.created_at.desc()).all()
+    
+    return render_template('order.html', orders=restaurant_orders)
+
+@app.route('/orders/update/<int:order_id>', methods=['POST'])
+def update_order_status(order_id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    order = db.session.get(Order, order_id)
+    if order and order.restaurant_id == restaurant.id:
+        new_status = request.form.get('status')
+        if new_status in ['Pending', 'Accepted', 'Delivered']:
+            order.status = new_status
+            db.session.commit()
+            flash('Order status updated.')
+            
+    return redirect(url_for('orders'))
 
 @app.route('/logout')
 def logout():

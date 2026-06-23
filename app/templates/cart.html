@@ -47,7 +47,13 @@
                         <strong style="font-size: 1.25rem; color: var(--color-primary);">${{ "%.2f"|format(total_price) }}</strong>
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 2rem; padding: 0.75rem;">Proceed to Checkout (UI Only)</button>
+                    <form action="/checkout" method="POST" style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
+                        <div class="form-group">
+                            <label for="customer_name">Your Name for the Order</label>
+                            <input type="text" id="customer_name" name="customer_name" class="form-control" required placeholder="e.g. John Doe">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.75rem;">Place Order</button>
+                    </form>
                 {% else %}
                     <p class="text-center text-muted" style="padding: 2rem 0;">Your cart is empty.</p>
                     <a href="/" class="btn" style="display: block; text-align: center; width: 100%;">Return to Menu</a>

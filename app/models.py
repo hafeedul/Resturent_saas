@@ -30,15 +30,28 @@ class Restaurant(db.Model):
     
     # Relationships
     menu_items = db.relationship('MenuItem', backref='restaurant', lazy=True, cascade="all, delete-orphan")
+    orders = db.relationship('Order', backref='restaurant', lazy=True)
 
 class MenuItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    description = db.Column(db.String(255), nullable=True)
-    image_url = db.Column(db.String(500), nullable=True)
+    description = db.Column(db.Text)
+    image_url = db.Column(db.String(500))
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return f'<MenuItem {self.name}>'
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    customer_name = db.Column(db.String(100), nullable=False)
+    items_summary = db.Column(db.Text, nullable=False)
+    total_price = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(50), nullable=False, default="Pending")
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Order {self.id}>'

@@ -85,4 +85,31 @@ if "Quantity: 1" in cart_html and "15.99" in cart_html:
 else:
     print("ERROR: Cart did not calculate correctly.")
 
+# 6. Customer checks out
+print("\n[6] Customer proceeds to checkout...")
+checkout_data = urllib.parse.urlencode({
+    'customer_name': 'Alice Wonder'
+}).encode('utf-8')
+req = urllib.request.Request(
+    f"{BASE_URL}/checkout", 
+    data=checkout_data,
+    headers={'Host': 'test-diner.127.0.0.1:5000'}
+)
+res = customer_opener.open(req)
+success_html = res.read().decode('utf-8')
+if "Order Placed Successfully" in success_html and "Alice Wonder" in success_html:
+    print("SUCCESS: Order was placed successfully!")
+else:
+    print("ERROR: Order placement failed.")
+
+# 7. Owner checks orders dashboard
+print("\n[7] Owner views incoming orders...")
+req = urllib.request.Request(f"{BASE_URL}/orders")
+res = urllib.request.urlopen(req) # using the OWNER's cookie jar
+orders_html = res.read().decode('utf-8')
+if "Alice Wonder" in orders_html and "1x Super Mega Burger" in orders_html and "15.99" in orders_html:
+    print("SUCCESS: The order appeared on the owner's dashboard!")
+else:
+    print("ERROR: Order did not appear on the dashboard.")
+
 print("\n--- ALL TESTS PASSED! ---")
