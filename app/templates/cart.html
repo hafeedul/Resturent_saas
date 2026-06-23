@@ -1,39 +1,63 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | {{ restaurant.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/stitch.css">
+</head>
+<body>
+    
+    <!-- Tenant Navbar -->
+    <nav class="navbar" style="background-color: var(--color-surface);">
+        <div class="container flex items-center justify-between">
+            <h1 style="margin: 0; font-size: 1.5rem; color: var(--color-primary);"><a href="/" style="text-decoration: none; color: inherit;">{{ restaurant.name }}</a></h1>
+            <div>
+                <a href="/" class="btn" style="background: none; border: 1px solid var(--color-primary); color: var(--color-primary);">Back to Menu</a>
+            </div>
+        </div>
+    </nav>
 
-{% block content %}
-<div class="container mt-8 flex justify-center">
-    <div class="card" style="width: 100%; max-width: 600px;">
-        <h2 class="text-center">Your Cart</h2>
-        <p class="text-center text-muted">Review your items for {{ restaurant.name }} before checkout.</p>
-        
-        <div style="margin-top: 2rem;">
-            {% if items_in_cart %}
-                {% for cart_item in items_in_cart %}
-                <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
-                    <div>
-                        <strong>{{ cart_item.item.name }}</strong>
-                        <p class="text-sm text-muted">Quantity: {{ cart_item.quantity }} x ${{ "%.2f"|format(cart_item.item.price) }}</p>
+    <!-- Content -->
+    <div class="container mt-8 flex justify-center">
+        <div class="card" style="width: 100%; max-width: 600px;">
+            <h2 class="text-center">Your Cart</h2>
+            <p class="text-center text-muted">Review your items for {{ restaurant.name }} before checkout.</p>
+            
+            <div style="margin-top: 2rem;">
+                {% if items_in_cart %}
+                    {% for cart_item in items_in_cart %}
+                    <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <strong>{{ cart_item.item.name }}</strong>
+                            <p class="text-sm text-muted">Quantity: {{ cart_item.quantity }} x ${{ "%.2f"|format(cart_item.item.price) }}</p>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <strong>${{ "%.2f"|format(cart_item.line_total) }}</strong>
+                            <form action="/cart/remove/{{ cart_item.item.id }}" method="POST" style="margin: 0;">
+                                <button type="submit" class="btn" style="background: none; border: 1px solid var(--color-danger); color: var(--color-danger); padding: 0.25rem 0.5rem; font-size: 0.875rem;">Remove</button>
+                            </form>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 1rem; align-items: center;">
-                        <strong>${{ "%.2f"|format(cart_item.line_total) }}</strong>
-                        <form action="/cart/remove/{{ cart_item.item.id }}" method="POST" style="margin: 0;">
-                            <button type="submit" class="btn" style="background: none; border: 1px solid var(--color-danger); color: var(--color-danger); padding: 0.25rem 0.5rem; font-size: 0.875rem;">Remove</button>
-                        </form>
+                    {% endfor %}
+
+                    <div class="flex justify-between items-center mt-8">
+                        <strong style="font-size: 1.25rem;">Total:</strong>
+                        <strong style="font-size: 1.25rem; color: var(--color-primary);">${{ "%.2f"|format(total_price) }}</strong>
                     </div>
-                </div>
-                {% endfor %}
 
-                <div class="flex justify-between items-center mt-8">
-                    <strong style="font-size: 1.25rem;">Total:</strong>
-                    <strong style="font-size: 1.25rem; color: var(--color-primary);">${{ "%.2f"|format(total_price) }}</strong>
-                </div>
-
-                <button class="btn btn-primary" style="width: 100%; margin-top: 2rem; padding: 0.75rem;">Proceed to Checkout (UI Only)</button>
-            {% else %}
-                <p class="text-center text-muted" style="padding: 2rem 0;">Your cart is empty.</p>
-                <a href="/" class="btn" style="display: block; text-align: center; width: 100%;">Return to Menu</a>
-            {% endif %}
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 2rem; padding: 0.75rem;">Proceed to Checkout (UI Only)</button>
+                {% else %}
+                    <p class="text-center text-muted" style="padding: 2rem 0;">Your cart is empty.</p>
+                    <a href="/" class="btn" style="display: block; text-align: center; width: 100%;">Return to Menu</a>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
-{% endblock %}
+    
+    <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; color: var(--color-text-light);">
+        <p>Powered by RestoStitch</p>
+    </footer>
+</body>
+</html>

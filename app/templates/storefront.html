@@ -11,8 +11,11 @@
     
     <!-- Tenant Navbar (No SaaS login buttons here) -->
     <nav class="navbar" style="background-color: var(--color-surface);">
-        <div class="container flex items-center justify-center">
-            <h1 style="margin: 0; font-size: 1.5rem; color: var(--color-primary);">{{ restaurant.name }}</h1>
+        <div class="container flex items-center justify-between">
+            <h1 style="margin: 0; font-size: 1.5rem; color: var(--color-primary);"><a href="/" style="text-decoration: none; color: inherit;">{{ restaurant.name }}</a></h1>
+            <div>
+                <a href="/cart" class="btn btn-primary">View Cart</a>
+            </div>
         </div>
     </nav>
 

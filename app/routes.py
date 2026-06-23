@@ -19,7 +19,12 @@ def load_tenant():
     
     # If it's a tenant domain, fetch the restaurant
     if not g.is_main_domain:
-        g.restaurant = Restaurant.query.filter_by(domain=host).first()
+        # Extract the subdomain prefix (e.g., 'mario' from 'mario.127.0.0.1:5000' or 'mario.localhost:5000')
+        subdomain = host.split('.')[0]
+        
+        # Find restaurant where domain starts with the subdomain (to handle both 127.0.0.1 and localhost variations)
+        g.restaurant = Restaurant.query.filter(Restaurant.domain.like(f"{subdomain}.%")).first()
+        
         if g.restaurant:
             # Short-circuit the request for the homepage of the tenant
             if request.path == '/':
