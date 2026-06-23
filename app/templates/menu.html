@@ -1,55 +1,76 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="app-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
-            <span class="form-label">MAIN</span>
-            <a href="/dashboard" class="sidebar-link">Overview</a>
-            <a href="/orders" class="sidebar-link">Live Orders</a>
-            <a href="/menu" class="sidebar-link active">Menu Editor</a>
-            <span class="form-label" style="margin-top: 1rem;">SETTINGS</span>
-            <a href="#" class="sidebar-link">Restaurant Profile</a>
-            <a href="#" class="sidebar-link">Billing</a>
-        </nav>
-    </aside>
-
-    <!-- Main Content Area -->
-    <div class="app-main">
-        <div class="flex items-center justify-between mb-8">
-            <h2>Menu Editor</h2>
-            <button class="btn btn-primary">+ Add Item</button>
+<div class="container mt-8">
+    <h2>Menu Editor</h2>
+    <p class="text-muted">Manage your restaurant's menu items.</p>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div style="color: var(--color-primary); margin-bottom: 1rem; font-weight: bold;">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
         </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Add Item Form -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3>Add New Item</h3>
+        <form action="/menu" method="POST" style="margin-top: 1rem;">
+            <div class="form-group">
+                <label class="form-label" for="name">Item Name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Classic Burger" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="price">Price ($)</label>
+                <input type="number" step="0.01" id="price" name="price" class="form-input" placeholder="12.99" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="description">Description</label>
+                <input type="text" id="description" name="description" class="form-input" placeholder="Juicy beef patty with cheese.">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="image_url">Image URL</label>
+                <input type="url" id="image_url" name="image_url" class="form-input" placeholder="https://example.com/burger.jpg">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Add Item</button>
+        </form>
+    </div>
+
+    <!-- Current Items -->
+    <div class="card">
+        <h3 class="border-bottom pb-4">Current Menu Items</h3>
         
-        <div class="card">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead>
-                    <tr style="border-bottom: 1px solid var(--color-border);">
-                        <th style="padding: 1rem 0;">Item Name</th>
-                        <th style="padding: 1rem 0;">Category</th>
-                        <th style="padding: 1rem 0;">Price</th>
-                        <th style="padding: 1rem 0;">Status</th>
-                        <th style="padding: 1rem 0; text-align: right;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid var(--color-border);">
-                        <td style="padding: 1rem 0; font-weight: 500;">Classic Burger</td>
-                        <td style="padding: 1rem 0; color: var(--color-text-muted);">Mains</td>
-                        <td style="padding: 1rem 0;">$12.99</td>
-                        <td style="padding: 1rem 0;"><span class="badge badge-success">Available</span></td>
-                        <td style="padding: 1rem 0; text-align: right;"><a href="#">Edit</a></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 1rem 0; font-weight: 500;">Truffle Fries</td>
-                        <td style="padding: 1rem 0; color: var(--color-text-muted);">Sides</td>
-                        <td style="padding: 1rem 0;">$6.99</td>
-                        <td style="padding: 1rem 0;"><span class="badge badge-warning">Sold Out</span></td>
-                        <td style="padding: 1rem 0; text-align: right;"><a href="#">Edit</a></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div style="margin-top: 1rem;">
+            {% if items %}
+                {% for item in items %}
+                <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--color-border); padding: 1rem 0;">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        {% if item.image_url %}
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        {% endif %}
+                        <div>
+                            <strong style="display: block; font-size: 1.1rem;">{{ item.name }}</strong>
+                            <span class="text-sm text-muted">{{ item.description }}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <strong style="font-size: 1.1rem;">${{ "%.2f"|format(item.price) }}</strong>
+                        <form action="/menu/delete/{{ item.id }}" method="POST" style="margin: 0;">
+                            <button type="submit" class="btn" style="background: none; border: 1px solid var(--color-danger); color: var(--color-danger); padding: 0.25rem 0.5rem; font-size: 0.875rem;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-muted" style="padding: 2rem;">No items in your menu yet. Add one above!</p>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -24,10 +24,21 @@ class User(db.Model):
 class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(500), nullable=True)
-    domain = db.Column(db.String(100), unique=True, nullable=False, index=True)
+    description = db.Column(db.Text, nullable=True)
+    domain = db.Column(db.String(120), unique=True, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    # Relationships
+    menu_items = db.relationship('MenuItem', backref='restaurant', lazy=True, cascade="all, delete-orphan")
+
+class MenuItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    image_url = db.Column(db.String(500), nullable=True)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f'<Restaurant {self.name} ({self.domain})>'
+        return f'<MenuItem {self.name}>'

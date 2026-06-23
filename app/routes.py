@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, g, flash
 from flask import current_app as app
 from app import db
-from app.models import User, Restaurant
+from app.models import User, Restaurant, MenuItem
 
 # The domain that hosts the main SaaS landing page
 # In production this might be 'restostitch.com', locally it's usually '127.0.0.1:5000' or 'localhost:5000'
@@ -20,14 +20,18 @@ def load_tenant():
     # If it's a tenant domain, fetch the restaurant
     if not g.is_main_domain:
         g.restaurant = Restaurant.query.filter_by(domain=host).first()
+        if g.restaurant:
+            # Short-circuit the request for the homepage of the tenant
+            if request.path == '/':
+                items = MenuItem.query.filter_by(restaurant_id=g.restaurant.id).all()
+                return render_template('storefront.html', restaurant=g.restaurant, items=items)
+        else:
+            return "Restaurant not found on this domain.", 404
 
 @app.route('/')
 def home():
-    if not g.is_main_domain:
-        if g.restaurant:
-            return render_template('storefront.html', restaurant=g.restaurant)
-        return "Restaurant not found on this domain.", 404
-        
+    # If we reached here, and it's not main domain, the before_request already handled it
+    # unless it wasn't the '/' path, but home is '/'. So this is just for the main domain.
     return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -83,10 +87,53 @@ def dashboard():
     user = db.session.get(User, session['user_id'])
     return render_template('dashboard.html', user=user)
 
-@app.route('/menu')
+@app.route('/menu', methods=['GET', 'POST'])
 def menu():
     if 'user_id' not in session: return redirect(url_for('login'))
-    return render_template('menu.html')
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    if request.method == 'POST':
+        # Add new menu item
+        name = request.form.get('name')
+        price = request.form.get('price')
+        description = request.form.get('description')
+        image_url = request.form.get('image_url')
+        
+        if name and price:
+            try:
+                price = float(price)
+                new_item = MenuItem(
+                    name=name,
+                    price=price,
+                    description=description,
+                    image_url=image_url,
+                    restaurant_id=restaurant.id
+                )
+                db.session.add(new_item)
+                db.session.commit()
+                flash('Menu item added successfully!')
+            except ValueError:
+                flash('Price must be a valid number.')
+        
+        return redirect(url_for('menu'))
+        
+    items = MenuItem.query.filter_by(restaurant_id=restaurant.id).all()
+    return render_template('menu.html', items=items)
+
+@app.route('/menu/delete/<int:item_id>', methods=['POST'])
+def delete_menu_item(item_id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    item = db.session.get(MenuItem, item_id)
+    if item and item.restaurant_id == restaurant.id:
+        db.session.delete(item)
+        db.session.commit()
+        flash('Menu item deleted.')
+        
+    return redirect(url_for('menu'))
 
 @app.route('/cart')
 def cart():

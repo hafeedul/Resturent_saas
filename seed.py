@@ -29,4 +29,24 @@ with app.app_context():
     db.session.commit()
     print(f"Created restaurant: {mario_pizza.name} on domain {mario_pizza.domain}")
 
+    # Seed dummy menu items
+    from app.models import MenuItem
+    burger = MenuItem(
+        name="Classic Burger",
+        price=12.99,
+        description="A delicious beef patty with lettuce, tomato, and cheese.",
+        image_url="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80",
+        restaurant_id=mario_pizza.id
+    )
+    fries = MenuItem(
+        name="Truffle Fries",
+        price=6.99,
+        description="Crispy fries tossed in truffle oil and parmesan.",
+        image_url="https://images.unsplash.com/photo-1576107232684-1279f3908594?w=500&q=80",
+        restaurant_id=mario_pizza.id
+    )
+    db.session.add_all([burger, fries])
+    db.session.commit()
+    print("Created dummy menu items.")
+
 print("Database seeding complete!")
