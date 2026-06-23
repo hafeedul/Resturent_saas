@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Cheezy Town Theme (Ranchers Cafe Inspired)
+   Overrides the Stitch Design System for the public storefront.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Montserrat:wght@400;600;700&display=swap');
+
+:root {
+  /* Fast Food Palette - Deep Blacks, Vibrant Yellows, and Punchy Reds */
+  --color-primary: #FFC107;      /* Cheezy Yellow */
+  --color-primary-hover: #FFA000;
+  --color-surface: #1E1E1E;      /* Dark Surface for cards */
+  --color-surface-hover: #2D2D2D;
+  --color-background: #121212;   /* Very Dark Background */
+  --color-text: #FFFFFF;         /* White text on dark */
+  --color-text-muted: #B3B3B3;
+  --color-border: #333333;
+  --color-danger: #E53935;       /* Punchy Red */
+  --color-success: #4CAF50;
+  
+  /* Typography */
+  --font-family: 'Montserrat', sans-serif;
+  --font-heading: 'Oswald', sans-serif;
+
+  /* Aggressive Shadows */
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.7);
+  
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #000000;
+  border-bottom: 2px solid var(--color-primary);
+  box-shadow: 0 4px 10px rgba(255, 193, 7, 0.2);
+}
+
+.nav-brand {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Fast Food Buttons */
+.btn {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 50px; /* Pill shape */
+  padding: var(--space-3) var(--space-6);
+  font-size: 1.1rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #000000; /* Black text on yellow */
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  color: #000000;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px rgba(255, 193, 7, 0.4);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: #000000;
+}
+
+/* Cards (Menu Items) */
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  overflow: hidden; /* For images */
+  padding: 0; /* Removing padding to allow full width image */
+  border-radius: var(--radius-lg);
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg), 0 0 15px rgba(255, 193, 7, 0.2);
+}
+
+/* Hero Section */
+.hero {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1600&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  padding: 6rem 2rem;
+  text-align: center;
+  border-bottom: 4px solid var(--color-primary);
+}
+
+.hero h1 {
+  font-size: 4.5rem;
+  color: var(--color-primary);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.5rem;
+  color: #FFFFFF;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
+/* Input Fields */
+.form-control {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+}

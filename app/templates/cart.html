@@ -6,24 +6,21 @@
     <title>Your Cart | {{ restaurant.name }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/stitch.css">
+    <link rel="stylesheet" href="/static/css/cheezy.css">
 </head>
-<body>
+<body style="background-color: var(--color-background); color: var(--color-text);">
     
     <!-- Tenant Navbar -->
-    <nav class="navbar" style="background-color: var(--color-surface);">
+    <nav class="navbar" style="background-color: #000; border-bottom: 2px solid var(--color-primary);">
         <div class="container flex items-center justify-between">
-            <h1 style="margin: 0; font-size: 1.5rem; color: var(--color-primary);"><a href="/" style="text-decoration: none; color: inherit;">{{ restaurant.name }}</a></h1>
-            <div>
-                <a href="/" class="btn" style="background: none; border: 1px solid var(--color-primary); color: var(--color-primary);">Back to Menu</a>
-            </div>
+            <h1 class="nav-brand" style="margin: 0;"><a href="/" style="text-decoration: none; color: inherit;">{{ restaurant.name }}</a></h1>
         </div>
     </nav>
 
     <!-- Content -->
     <div class="container mt-8 flex justify-center">
-        <div class="card" style="width: 100%; max-width: 600px;">
-            <h2 class="text-center">Your Cart</h2>
-            <p class="text-center text-muted">Review your items for {{ restaurant.name }} before checkout.</p>
+        <div class="card" style="width: 100%; max-width: 800px; padding: 3rem; background-color: var(--color-surface); border: 1px solid var(--color-border);">
+            <h2 style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 2rem; color: var(--color-primary);">Your Cart</h2>
             
             <div style="margin-top: 2rem;">
                 {% if items_in_cart %}
@@ -42,21 +39,21 @@
                     </div>
                     {% endfor %}
 
-                    <div class="flex justify-between items-center mt-8">
-                        <strong style="font-size: 1.25rem;">Total:</strong>
-                        <strong style="font-size: 1.25rem; color: var(--color-primary);">${{ "%.2f"|format(total_price) }}</strong>
+                    <div class="flex justify-between items-center" style="margin-top: 2rem; padding-top: 1rem; border-top: 2px dashed var(--color-border);">
+                        <strong style="font-size: 1.5rem;">TOTAL</strong>
+                        <strong style="font-size: 2rem; color: var(--color-primary);">${{ "%.2f"|format(total_price) }}</strong>
                     </div>
 
                     <form action="/checkout" method="POST" style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
                         <div class="form-group">
-                            <label for="customer_name">Your Name for the Order</label>
-                            <input type="text" id="customer_name" name="customer_name" class="form-control" required placeholder="e.g. John Doe">
+                            <label for="customer_name" class="form-label" style="color: var(--color-text-muted);">Name for the Order</label>
+                            <input type="text" id="customer_name" name="customer_name" class="form-control" required placeholder="e.g. John Doe" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF;">
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.75rem;">Place Order</button>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.25rem;">PLACE ORDER</button>
                     </form>
                 {% else %}
-                    <p class="text-center text-muted" style="padding: 2rem 0;">Your cart is empty.</p>
-                    <a href="/" class="btn" style="display: block; text-align: center; width: 100%;">Return to Menu</a>
+                    <p class="text-center text-muted" style="padding: 4rem 0; font-size: 1.2rem;">Your tray is empty.</p>
+                    <a href="/" class="btn btn-primary" style="display: block; text-align: center; width: 100%;">RETURN TO MENU</a>
                 {% endif %}
             </div>
         </div>

@@ -12,40 +12,51 @@ with app.app_context():
     print("Created new tables.")
 
     # Seed dummy user
-    admin = User(name="Mario Rossi", email="mario@restaurant.com")
-    admin.set_password("password123")
-    db.session.add(admin)
+    user = User(name="Owner", email="owner@cheezytown.com")
+    user.set_password("password123")
+    db.session.add(user)
     db.session.commit()
-    print(f"Created user: {admin.email}")
+    print(f"Created user: {user.email}")
 
-    # Seed dummy restaurant linked to the user
-    mario_pizza = Restaurant(
-        name="Mario's Pizza",
-        description="The best authentic Italian pizza in town. Established 1999.",
-        domain="mario.127.0.0.1:5000",
-        owner_id=admin.id
+    # Seed dummy restaurant
+    from app.models import Restaurant
+    cheezy_town = Restaurant(
+        name="Cheezy Town", 
+        description="The cheesiest, most mouth-watering burgers in town!", 
+        domain="cheezy.127.0.0.1:5000", 
+        owner_id=user.id
     )
-    db.session.add(mario_pizza)
+    db.session.add(cheezy_town)
     db.session.commit()
-    print(f"Created restaurant: {mario_pizza.name} on domain {mario_pizza.domain}")
+    print(f"Created restaurant: {cheezy_town.name} on domain {cheezy_town.domain}")
 
     # Seed dummy menu items
     from app.models import MenuItem
     burger = MenuItem(
-        name="Classic Burger",
+        name="The Cheezy Monster",
         price=12.99,
-        description="A delicious beef patty with lettuce, tomato, and cheese.",
-        image_url="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80",
-        restaurant_id=mario_pizza.id
+        description="Triple beef patty, quadruple cheddar cheese, special house sauce, crispy onions, all hugged by a brioche bun.",
+        image_url="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop",
+        restaurant_id=cheezy_town.id
     )
     fries = MenuItem(
-        name="Truffle Fries",
+        name="Loaded Cheezy Fries",
         price=6.99,
-        description="Crispy fries tossed in truffle oil and parmesan.",
-        image_url="https://images.unsplash.com/photo-1576107232684-1279f3908594?w=500&q=80",
-        restaurant_id=mario_pizza.id
+        description="Crispy golden fries smothered in our signature liquid gold cheese and topped with smoked bacon bits.",
+        image_url="https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?q=80&w=600&auto=format&fit=crop",
+        restaurant_id=cheezy_town.id
     )
-    db.session.add_all([burger, fries])
+    shake = MenuItem(
+        name="Chocolate Lava Shake",
+        price=5.99,
+        description="Thick chocolate milkshake with brownie chunks and whipped cream.",
+        image_url="https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=600&auto=format&fit=crop",
+        restaurant_id=cheezy_town.id
+    )
+    
+    db.session.add(burger)
+    db.session.add(fries)
+    db.session.add(shake)
     db.session.commit()
     print("Created dummy menu items.")
 

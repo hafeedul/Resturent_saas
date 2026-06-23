@@ -3,71 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ restaurant.name }} | Powered by RestoStitch</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/stitch.css') }}">
+    <title>{{ restaurant.name }} | Order Online</title>
+    <!-- Use Cheezy Town Theme if it's the specific fast food, else fallback to stitch -->
+    <link rel="stylesheet" href="/static/css/stitch.css">
+    <link rel="stylesheet" href="/static/css/cheezy.css">
 </head>
 <body>
-    
-    <!-- Tenant Navbar (No SaaS login buttons here) -->
-    <nav class="navbar" style="background-color: var(--color-surface);">
+    <nav class="navbar">
         <div class="container flex items-center justify-between">
-            <h1 style="margin: 0; font-size: 1.5rem; color: var(--color-primary);"><a href="/" style="text-decoration: none; color: inherit;">{{ restaurant.name }}</a></h1>
-            <div>
-                <a href="/cart" class="btn btn-primary">View Cart</a>
+            <h1 class="nav-brand" style="margin:0;"><a href="/" style="text-decoration: none; color: inherit;">{{ restaurant.name }}</a></h1>
+            <div class="nav-links">
+                <a href="/cart" class="btn btn-primary" style="display: flex; gap: 0.5rem; align-items: center;">
+                    🛒 Cart 
+                    {% if session.get('cart') %}
+                        <span style="background: #000; color: #FFF; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">
+                            {{ session.get('cart')|length }}
+                        </span>
+                    {% endif %}
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Tenant Content -->
-    <main class="container mt-8">
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <div style="background-color: var(--color-surface); border-left: 4px solid var(--color-primary); padding: 1rem; margin-bottom: 2rem; border-radius: 4px;">
-              {% for message in messages %}
-                <p style="margin: 0;">{{ message }}</p>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% endwith %}
-
-        <div class="text-center" style="padding: 3rem 0;">
-            <h2>{{ restaurant.name }}</h2>
-            <p style="font-size: 1.25rem; max-width: 600px; margin: 0 auto;">{{ restaurant.description }}</p>
+    <!-- Massive Fast Food Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>WELCOME TO {{ restaurant.name|upper }}</h1>
+            <p>{{ restaurant.description }}</p>
+            <a href="#menu" class="btn btn-primary" style="font-size: 1.5rem; padding: 1rem 3rem;">ORDER NOW</a>
         </div>
+    </section>
 
-        <div class="card mt-8">
-            <h3 class="text-center border-bottom pb-4">Our Menu</h3>
-            
-            <div style="margin-top: 2rem;">
-                {% if items %}
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
-                        {% for item in items %}
-                        <div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
-                            {% if item.image_url %}
-                            <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 4px;">
-                            {% endif %}
-                            <div class="flex justify-between items-center">
-                                <strong style="font-size: 1.25rem;">{{ item.name }}</strong>
-                                <strong style="color: var(--color-primary);">${{ "%.2f"|format(item.price) }}</strong>
-                            </div>
-                            <p class="text-muted text-sm" style="flex-grow: 1;">{{ item.description }}</p>
-                            
-                            <form action="/cart/add/{{ item.id }}" method="POST" style="margin-top: 1rem;">
-                                <button type="submit" class="btn btn-primary" style="width: 100%;">Add to Cart</button>
-                            </form>
+    <!-- Menu Grid -->
+    <main class="container" id="menu" style="padding: 4rem 1rem;">
+        <h2 style="text-align: center; font-size: 3rem; margin-bottom: 3rem; color: var(--color-primary);">OUR MENU</h2>
+        
+        <div class="grid grid-cols-3" style="gap: 2rem;">
+            {% if items %}
+                {% for item in items %}
+                <div class="card" style="display: flex; flex-direction: column; height: 100%;">
+                    <!-- Food Image full width -->
+                    {% if item.image_url %}
+                        <div style="width: 100%; height: 250px; overflow: hidden;">
+                            <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                         </div>
-                        {% endfor %}
+                    {% else %}
+                        <div style="width: 100%; height: 250px; background: #333; display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #666; font-size: 3rem;">🍔</span>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Content area -->
+                    <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0; font-size: 1.5rem; line-height: 1.2;">{{ item.name }}</h3>
+                            <strong style="color: var(--color-primary); font-size: 1.5rem; white-space: nowrap;">${{ "%.2f"|format(item.price) }}</strong>
+                        </div>
+                        <p style="color: var(--color-text-muted); flex-grow: 1;">{{ item.description }}</p>
+                        
+                        <form action="/cart/add/{{ item.id }}" method="POST" style="margin-top: 1rem;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">ADD TO CART</button>
+                        </form>
                     </div>
-                {% else %}
-                    <p class="text-center text-muted">The menu is currently being updated. Check back soon for our delicious offerings!</p>
-                {% endif %}
-            </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 0;">
+                    <p style="font-size: 1.5rem; color: var(--color-text-muted);">The kitchen is setting up the menu...</p>
+                </div>
+            {% endif %}
         </div>
     </main>
 
-    <footer class="text-center text-muted mt-8 mb-8" style="font-size: 0.875rem;">
-        Powered by RestoStitch SaaS
+    <footer style="background-color: #000; padding: 3rem 0; border-top: 2px solid var(--color-border); text-align: center; margin-top: 4rem;">
+        <p style="color: var(--color-text-muted); font-size: 1rem;">&copy; 2026 {{ restaurant.name }}. All rights reserved.</p>
+        <p style="color: #555; font-size: 0.8rem; margin-top: 0.5rem;">Powered by Stitch SaaS</p>
     </footer>
 </body>
 </html>
