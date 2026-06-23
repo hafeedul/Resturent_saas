@@ -20,11 +20,30 @@
                     </div>
                 </div>
                 
+                {% if order.special_instructions %}
+                <div style="background-color: rgba(229, 57, 53, 0.1); border-left: 4px solid var(--color-danger); padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                    <strong style="color: var(--color-danger); display: block; margin-bottom: 0.25rem;">⚠️ SPECIAL INSTRUCTIONS & ALLERGIES:</strong>
+                    <p style="margin: 0; font-size: 1.1rem; font-weight: bold; color: #FFF;">{{ order.special_instructions }}</p>
+                </div>
+                {% endif %}
+                
                 <div class="mb-4">
                     <div style="background-color: var(--color-background); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                            <span class="badge badge-primary" style="background-color: var(--color-primary); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase;">
+                                {{ order.dining_option }}
+                            </span>
+                            {% if order.dining_option == 'Dine-In' and order.table_number %}
+                            <span class="badge" style="background-color: #333; color: #FFF; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem;">
+                                {{ order.table_number }}
+                            </span>
+                            {% endif %}
+                        </div>
                         <p style="margin: 0 0 0.25rem 0;"><strong>Customer:</strong> {{ order.customer_name }}</p>
                         <p style="margin: 0 0 0.25rem 0;"><strong>Phone:</strong> {{ order.customer_phone }}</p>
+                        {% if order.dining_option == 'Delivery' %}
                         <p style="margin: 0 0 0.25rem 0;"><strong>Address:</strong> {{ order.delivery_address }}</p>
+                        {% endif %}
                         <p style="margin: 0;"><strong>Payment:</strong> {{ order.payment_method }}</p>
                     </div>
                     

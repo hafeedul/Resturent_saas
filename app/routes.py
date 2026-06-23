@@ -231,10 +231,21 @@ def checkout():
         
     customer_name = request.form.get('customer_name', '').strip()
     customer_phone = request.form.get('customer_phone', '').strip()
+    dining_option = request.form.get('dining_option', 'Delivery')
     delivery_address = request.form.get('delivery_address', '').strip()
+    table_number = request.form.get('table_number', '').strip()
+    special_instructions = request.form.get('special_instructions', '').strip()
     
-    if not customer_name or not customer_phone or not delivery_address:
-        flash("Please provide all required delivery details (Name, Phone, Address).")
+    if not customer_name or not customer_phone:
+        flash("Please provide your name and phone number.")
+        return redirect(url_for('cart'))
+        
+    if dining_option == 'Delivery' and not delivery_address:
+        flash("Please provide a delivery address.")
+        return redirect(url_for('cart'))
+        
+    if dining_option == 'Dine-In' and not table_number:
+        flash("Please provide your table number.")
         return redirect(url_for('cart'))
         
     cart_items = session.get('cart', {})
@@ -261,12 +272,26 @@ def checkout():
         return redirect(url_for('cart'))
         
     # Create the Order
+    # Build a JSON-like structure for the items column to store raw cart
+    raw_items = []
+    for item_id_str, qty in cart_items.items():
+        try:
+            it = db.session.get(MenuItem, int(item_id_str))
+            if it:
+                raw_items.append({"name": it.name, "price": it.price, "quantity": qty})
+        except:
+            pass
+
     new_order = Order(
         customer_name=customer_name,
         customer_phone=customer_phone,
-        delivery_address=delivery_address,
+        delivery_address=delivery_address if dining_option == 'Delivery' else None,
+        dining_option=dining_option,
+        table_number=table_number if dining_option == 'Dine-In' else None,
+        special_instructions=special_instructions,
         payment_method="Cash", # Forced for MVP
         items_summary=", ".join(items_summary_list),
+        items=raw_items,
         total_price=total_price,
         status="Pending",
         restaurant_id=g.restaurant.id

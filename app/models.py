@@ -61,7 +61,13 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_name = db.Column(db.String(100), nullable=False)
     customer_phone = db.Column(db.String(20), nullable=False)
-    delivery_address = db.Column(db.Text, nullable=False)
+    delivery_address = db.Column(db.Text, nullable=True)
+    
+    dining_option = db.Column(db.String(50), nullable=False, default="Delivery")
+    table_number = db.Column(db.String(20), nullable=True)
+    special_instructions = db.Column(db.Text, nullable=True)
+    
+    items = db.Column(db.JSON, nullable=False)
     payment_method = db.Column(db.String(50), nullable=False, default="Cash")
     items_summary = db.Column(db.Text, nullable=False)
     total_price = db.Column(db.Float, nullable=False)

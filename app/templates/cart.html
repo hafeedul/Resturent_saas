@@ -54,8 +54,24 @@
                             <input type="tel" id="customer_phone" name="customer_phone" class="form-control" required placeholder="e.g. 555-0198" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%;">
                         </div>
                         <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="dining_option" class="form-label" style="color: var(--color-text-muted);">Dining Option</label>
+                            <select id="dining_option" name="dining_option" class="form-control" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%;" onchange="toggleDiningFields()">
+                                <option value="Delivery">Delivery</option>
+                                <option value="Takeaway">Takeaway</option>
+                                <option value="Dine-In">Dine-In</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="delivery_address_group" style="margin-bottom: 1.5rem;">
                             <label for="delivery_address" class="form-label" style="color: var(--color-text-muted);">Delivery Address</label>
-                            <textarea id="delivery_address" name="delivery_address" class="form-control" required placeholder="123 Cheezy St, Apt 4" rows="3" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%; resize: vertical;"></textarea>
+                            <textarea id="delivery_address" name="delivery_address" class="form-control" placeholder="123 Cheezy St, Apt 4" rows="3" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%; resize: vertical;"></textarea>
+                        </div>
+                        <div class="form-group" id="table_number_group" style="margin-bottom: 1.5rem; display: none;">
+                            <label for="table_number" class="form-label" style="color: var(--color-text-muted);">Table Number</label>
+                            <input type="text" id="table_number" name="table_number" class="form-control" placeholder="e.g. Table 4" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="special_instructions" class="form-label" style="color: var(--color-text-muted);">Special Instructions & Allergies</label>
+                            <textarea id="special_instructions" name="special_instructions" class="form-control" placeholder="e.g. Peanut allergy, sauce on the side." rows="2" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%; resize: vertical; border-color: var(--color-danger);"></textarea>
                         </div>
                         <div class="form-group" style="margin-bottom: 2rem;">
                             <label class="form-label" style="color: var(--color-text-muted);">Payment Method</label>
@@ -74,5 +90,36 @@
     <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; color: var(--color-text-light);">
         <p>Powered by RestoStitch</p>
     </footer>
+
+    <script>
+        function toggleDiningFields() {
+            var option = document.getElementById('dining_option').value;
+            var addressGroup = document.getElementById('delivery_address_group');
+            var addressInput = document.getElementById('delivery_address');
+            var tableGroup = document.getElementById('table_number_group');
+            var tableInput = document.getElementById('table_number');
+
+            if (option === 'Delivery') {
+                addressGroup.style.display = 'block';
+                addressInput.required = true;
+                tableGroup.style.display = 'none';
+                tableInput.required = false;
+            } else if (option === 'Dine-In') {
+                addressGroup.style.display = 'none';
+                addressInput.required = false;
+                tableGroup.style.display = 'block';
+                tableInput.required = true;
+            } else {
+                // Takeaway
+                addressGroup.style.display = 'none';
+                addressInput.required = false;
+                tableGroup.style.display = 'none';
+                tableInput.required = false;
+            }
+        }
+        
+        // Initialize state on page load
+        document.addEventListener('DOMContentLoaded', toggleDiningFields);
+    </script>
 </body>
 </html>
