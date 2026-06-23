@@ -33,7 +33,7 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email').strip() if request.form.get('email') else ''
         password = request.form.get('password')
         
         user = User.query.filter_by(email=email).first()
@@ -49,7 +49,7 @@ def login():
 def register():
     if request.method == 'POST':
         restaurant_name = request.form.get('restaurant_name')
-        email = request.form.get('email')
+        email = request.form.get('email').strip() if request.form.get('email') else ''
         password = request.form.get('password')
         
         # Super simple domain generation for demo (e.g. "The Great Eatery" -> "the-great-eatery.127.0.0.1:5000")
@@ -86,6 +86,10 @@ def dashboard():
 def menu():
     if 'user_id' not in session: return redirect(url_for('login'))
     return render_template('menu.html')
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
 
 @app.route('/orders')
 def orders():

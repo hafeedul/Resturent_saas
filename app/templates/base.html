@@ -18,6 +18,7 @@
             <div class="nav-links">
                 {% if request.path == '/' or request.path == '/login' or request.path == '/register' %}
                     <!-- Public Links -->
+                    <a href="/cart" class="nav-item">Cart</a>
                     <a href="/login" class="nav-item">Sign in</a>
                     <a href="/register" class="btn btn-primary">Start Free Trial</a>
                 {% else %}
@@ -30,9 +31,13 @@
     </nav>
 
     <!-- Page Content -->
-    <main>
+    <main style="min-height: 80vh;">
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="text-center text-muted" style="padding: 2rem 0; font-size: 0.875rem; border-top: 1px solid var(--color-border); margin-top: 2rem;">
+        &copy; 2026 RestoStitch SaaS. All rights reserved.
+    </footer>
 
 </body>
 </html>

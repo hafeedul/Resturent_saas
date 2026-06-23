@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-8 flex justify-center">
+    <div class="card" style="width: 100%; max-width: 600px;">
+        <h2 class="text-center">Your Cart</h2>
+        <p class="text-center text-muted">Review your items before checkout.</p>
+        
+        <div style="margin-top: 2rem;">
+            <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <strong>Classic Burger</strong>
+                    <p class="text-sm text-muted">No onions</p>
+                </div>
+                <strong>$12.99</strong>
+            </div>
+            
+            <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <strong>Truffle Fries</strong>
+                </div>
+                <strong>$6.99</strong>
+            </div>
+
+            <div class="flex justify-between items-center mt-8">
+                <strong style="font-size: 1.25rem;">Total:</strong>
+                <strong style="font-size: 1.25rem;">$19.98</strong>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 2rem; padding: 0.75rem;">Proceed to Checkout (UI Only)</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
