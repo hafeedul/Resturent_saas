@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-8 flex justify-center">
+    <div class="card" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center">Create Account</h2>
+        <p class="text-center">Start your 14-day free trial today.</p>
+        
+        <form action="/dashboard" method="GET" style="margin-top: 1.5rem;">
+            <div class="form-group">
+                <label class="form-label" for="restaurant_name">Restaurant Name</label>
+                <input type="text" id="restaurant_name" class="form-input" placeholder="The Great Eatery" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="manager@restaurant.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+        </form>
+        
+        <div class="text-center" style="margin-top: 1.5rem;">
+            <p class="text-sm">Already have an account? <a href="/login">Sign in</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

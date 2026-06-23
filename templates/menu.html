@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <span class="form-label">MAIN</span>
+            <a href="/dashboard" class="sidebar-link">Overview</a>
+            <a href="/orders" class="sidebar-link">Live Orders</a>
+            <a href="/menu" class="sidebar-link active">Menu Editor</a>
+            <span class="form-label" style="margin-top: 1rem;">SETTINGS</span>
+            <a href="#" class="sidebar-link">Restaurant Profile</a>
+            <a href="#" class="sidebar-link">Billing</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+        <div class="flex items-center justify-between mb-8">
+            <h2>Menu Editor</h2>
+            <button class="btn btn-primary">+ Add Item</button>
+        </div>
+        
+        <div class="card">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <th style="padding: 1rem 0;">Item Name</th>
+                        <th style="padding: 1rem 0;">Category</th>
+                        <th style="padding: 1rem 0;">Price</th>
+                        <th style="padding: 1rem 0;">Status</th>
+                        <th style="padding: 1rem 0; text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem 0; font-weight: 500;">Classic Burger</td>
+                        <td style="padding: 1rem 0; color: var(--color-text-muted);">Mains</td>
+                        <td style="padding: 1rem 0;">$12.99</td>
+                        <td style="padding: 1rem 0;"><span class="badge badge-success">Available</span></td>
+                        <td style="padding: 1rem 0; text-align: right;"><a href="#">Edit</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem 0; font-weight: 500;">Truffle Fries</td>
+                        <td style="padding: 1rem 0; color: var(--color-text-muted);">Sides</td>
+                        <td style="padding: 1rem 0;">$6.99</td>
+                        <td style="padding: 1rem 0;"><span class="badge badge-warning">Sold Out</span></td>
+                        <td style="padding: 1rem 0; text-align: right;"><a href="#">Edit</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

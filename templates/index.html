@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-8">
+    <div class="text-center" style="padding: 4rem 0;">
+        <h1>The Operating System for Modern Restaurants</h1>
+        <p style="font-size: 1.25rem; max-width: 600px; margin: 0 auto 2rem;">Manage orders, update menus, and grow your restaurant business with our seamless, all-in-one SaaS platform.</p>
+        <div class="flex items-center justify-center gap-4">
+            <a href="/register" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-size: 1.125rem;">Get Started Free</a>
+            <a href="#features" class="btn btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 1.125rem;">View Features</a>
+        </div>
+    </div>
+
+    <!-- Feature Highlights -->
+    <div class="grid grid-cols-3 mt-8 mb-8" id="features">
+        <div class="card">
+            <h3>Menu Management</h3>
+            <p>Update your digital menu instantly. Add items, change prices, and control availability with a single click.</p>
+        </div>
+        <div class="card">
+            <h3>Order Tracking</h3>
+            <p>Never miss a beat. Track incoming orders, update their status, and notify the kitchen in real-time.</p>
+        </div>
+        <div class="card">
+            <h3>Analytics (Soon)</h3>
+            <p>Understand your best sellers and optimize your restaurant's profitability with actionable data.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

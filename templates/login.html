@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-8 flex justify-center">
+    <div class="card" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center">Welcome Back</h2>
+        <p class="text-center">Sign in to your restaurant dashboard.</p>
+        
+        <form action="/dashboard" method="GET" style="margin-top: 1.5rem;">
+            <!-- UI only: Using GET to /dashboard for demo purposes -->
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="manager@restaurant.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign In</button>
+        </form>
+        
+        <div class="text-center" style="margin-top: 1.5rem;">
+            <p class="text-sm">Don't have an account? <a href="/register">Register here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

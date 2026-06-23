@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <span class="form-label">MAIN</span>
+            <a href="/dashboard" class="sidebar-link active">Overview</a>
+            <a href="/orders" class="sidebar-link">Live Orders</a>
+            <a href="/menu" class="sidebar-link">Menu Editor</a>
+            <span class="form-label" style="margin-top: 1rem;">SETTINGS</span>
+            <a href="#" class="sidebar-link">Restaurant Profile</a>
+            <a href="#" class="sidebar-link">Billing</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+        <h2>Dashboard Overview</h2>
+        
+        <div class="grid grid-cols-3 mb-8">
+            <div class="card">
+                <p class="form-label">TODAY'S ORDERS</p>
+                <h3 style="margin: 0; font-size: 2rem;">24</h3>
+            </div>
+            <div class="card">
+                <p class="form-label">TODAY'S REVENUE</p>
+                <h3 style="margin: 0; font-size: 2rem;">$850.00</h3>
+            </div>
+            <div class="card">
+                <p class="form-label">ACTIVE MENU ITEMS</p>
+                <h3 style="margin: 0; font-size: 2rem;">42</h3>
+            </div>
+        </div>
+
+        <h3>Recent Activity</h3>
+        <div class="card">
+            <p class="text-muted">No recent activity to show yet. Setup your menu to start receiving orders!</p>
+            <a href="/menu" class="btn btn-primary" style="margin-top: 1rem;">Go to Menu Editor</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
