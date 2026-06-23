@@ -38,6 +38,17 @@
                 <label class="form-label" for="image_url">Image URL</label>
                 <input type="url" id="image_url" name="image_url" class="form-input" placeholder="https://example.com/burger.jpg">
             </div>
+
+            <div class="form-group">
+                <label class="form-label" for="category">Category</label>
+                <select id="category" name="category" class="form-input">
+                    <option value="Burgers">Burgers</option>
+                    <option value="Sides">Sides</option>
+                    <option value="Drinks">Drinks</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Deals">Deals</option>
+                </select>
+            </div>
             
             <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Add Item</button>
         </form>
@@ -57,7 +68,8 @@
                         {% endif %}
                         <div>
                             <strong style="display: block; font-size: 1.1rem;">{{ item.name }}</strong>
-                            <span class="text-sm text-muted">{{ item.description }}</span>
+                            <span class="badge badge-warning" style="font-size: 0.75rem; padding: 0.1rem 0.4rem;">{{ item.category }}</span>
+                            <span class="text-sm text-muted" style="display: block; margin-top: 0.25rem;">{{ item.description }}</span>
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem; align-items: center;">

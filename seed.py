@@ -32,11 +32,20 @@ with app.app_context():
 
     # Seed dummy menu items
     from app.models import MenuItem
-    burger = MenuItem(
+    burger1 = MenuItem(
         name="The Cheezy Monster",
         price=12.99,
         description="Triple beef patty, quadruple cheddar cheese, special house sauce, crispy onions, all hugged by a brioche bun.",
         image_url="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop",
+        category="Burgers",
+        restaurant_id=cheezy_town.id
+    )
+    burger2 = MenuItem(
+        name="Classic Chicken Crunch",
+        price=9.99,
+        description="Crispy fried chicken breast, spicy mayo, pickles, and lettuce.",
+        image_url="https://images.unsplash.com/photo-1615443213076-79efed824707?q=80&w=600&auto=format&fit=crop",
+        category="Burgers",
         restaurant_id=cheezy_town.id
     )
     fries = MenuItem(
@@ -44,6 +53,7 @@ with app.app_context():
         price=6.99,
         description="Crispy golden fries smothered in our signature liquid gold cheese and topped with smoked bacon bits.",
         image_url="https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?q=80&w=600&auto=format&fit=crop",
+        category="Sides",
         restaurant_id=cheezy_town.id
     )
     shake = MenuItem(
@@ -51,13 +61,24 @@ with app.app_context():
         price=5.99,
         description="Thick chocolate milkshake with brownie chunks and whipped cream.",
         image_url="https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=600&auto=format&fit=crop",
+        category="Drinks",
+        restaurant_id=cheezy_town.id
+    )
+    deal = MenuItem(
+        name="The Hunger Buster Combo",
+        price=18.99,
+        description="Any burger + Loaded Fries + Any Shake. A monster deal for a monster appetite.",
+        image_url="https://images.unsplash.com/photo-1606755962773-d324e0a13086?q=80&w=600&auto=format&fit=crop",
+        category="Deals",
         restaurant_id=cheezy_town.id
     )
     
-    db.session.add(burger)
+    db.session.add(burger1)
+    db.session.add(burger2)
     db.session.add(fries)
     db.session.add(shake)
+    db.session.add(deal)
     db.session.commit()
-    print("Created dummy menu items.")
+    print("Created dummy categorized menu items.")
 
 print("Database seeding complete!")

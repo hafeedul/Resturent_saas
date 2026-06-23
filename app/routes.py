@@ -118,6 +118,7 @@ def menu():
         price = request.form.get('price')
         description = request.form.get('description')
         image_url = request.form.get('image_url')
+        category = request.form.get('category', 'Main')
         
         if name and price:
             try:
@@ -127,6 +128,7 @@ def menu():
                     price=price,
                     description=description,
                     image_url=image_url,
+                    category=category,
                     restaurant_id=restaurant.id
                 )
                 db.session.add(new_item)

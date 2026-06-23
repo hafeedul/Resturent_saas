@@ -13,7 +13,7 @@
         <div class="container flex items-center justify-between">
             <h1 class="nav-brand" style="margin:0;"><a href="/" style="text-decoration: none; color: inherit;">{{ restaurant.name }}</a></h1>
             <div class="nav-links">
-                <a href="/cart" class="btn btn-primary" style="display: flex; gap: 0.5rem; align-items: center;">
+                <a href="/cart" class="btn btn-primary btn-pulse" style="display: flex; gap: 0.5rem; align-items: center;">
                     🛒 Cart 
                     {% if session.get('cart') %}
                         <span style="background: #000; color: #FFF; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">
@@ -30,28 +30,43 @@
         <div class="container">
             <h1>WELCOME TO {{ restaurant.name|upper }}</h1>
             <p>{{ restaurant.description }}</p>
-            <a href="#menu" class="btn btn-primary" style="font-size: 1.5rem; padding: 1rem 3rem;">ORDER NOW</a>
+            <a href="#menu" class="btn btn-primary btn-pulse" style="font-size: 1.5rem; padding: 1rem 3rem;">ORDER NOW</a>
         </div>
     </section>
 
+    <!-- Scrolling Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            🔥 100% PREMIUM BEEF 🔥 FRESHLY BAKED BUNS 🔥 MELTED CHEEZE 🔥 ICE COLD SHAKES 🔥 CRAZY DEALS 🔥 SATISFY YOUR CRAVINGS 🔥 100% PREMIUM BEEF 🔥 FRESHLY BAKED BUNS 🔥 MELTED CHEEZE 🔥 ICE COLD SHAKES 🔥 CRAZY DEALS 🔥
+        </div>
+    </div>
+
+    <!-- Sticky Category Tabs -->
+    <div class="category-tabs container">
+        <button class="tab-btn active" data-category="All">All Menu</button>
+        <button class="tab-btn" data-category="Burgers">Burgers</button>
+        <button class="tab-btn" data-category="Sides">Sides & Fries</button>
+        <button class="tab-btn" data-category="Drinks">Drinks & Shakes</button>
+        <button class="tab-btn" data-category="Deals">Deals</button>
+    </div>
+
     <!-- Menu Grid -->
     <main class="container" id="menu" style="padding: 4rem 1rem;">
-        <h2 style="text-align: center; font-size: 3rem; margin-bottom: 3rem; color: var(--color-primary);">OUR MENU</h2>
         
         <div class="grid grid-cols-3" style="gap: 2rem;">
             {% if items %}
                 {% for item in items %}
-                <div class="card" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="card menu-card fade-up" data-category="{{ item.category }}" style="display: flex; flex-direction: column; height: 100%;">
                     <!-- Food Image full width -->
-                    {% if item.image_url %}
-                        <div style="width: 100%; height: 250px; overflow: hidden;">
-                            <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                        </div>
-                    {% else %}
-                        <div style="width: 100%; height: 250px; background: #333; display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #666; font-size: 3rem;">🍔</span>
-                        </div>
-                    {% endif %}
+                    <div class="card-img-container">
+                        {% if item.image_url %}
+                            <img src="{{ item.image_url }}" alt="{{ item.name }}" class="card-img">
+                        {% else %}
+                            <div style="width: 100%; height: 100%; background: #333; display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #666; font-size: 3rem;">🍔</span>
+                            </div>
+                        {% endif %}
+                    </div>
                     
                     <!-- Content area -->
                     <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
@@ -62,7 +77,7 @@
                         <p style="color: var(--color-text-muted); flex-grow: 1;">{{ item.description }}</p>
                         
                         <form action="/cart/add/{{ item.id }}" method="POST" style="margin-top: 1rem;">
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">ADD TO CART</button>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">ADD TO TRAY</button>
                         </form>
                     </div>
                 </div>
@@ -79,5 +94,51 @@
         <p style="color: var(--color-text-muted); font-size: 1rem;">&copy; 2026 {{ restaurant.name }}. All rights reserved.</p>
         <p style="color: #555; font-size: 0.8rem; margin-top: 0.5rem;">Powered by Stitch SaaS</p>
     </footer>
+
+    <!-- Frontend Logic for Animations and Tabs -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Scroll Fade-up Observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+            // 2. Category Tab Filtering
+            const tabs = document.querySelectorAll('.tab-btn');
+            const cards = document.querySelectorAll('.menu-card');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active tab style
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const category = tab.getAttribute('data-category');
+
+                    cards.forEach(card => {
+                        // Reset animation state
+                        card.classList.remove('visible');
+                        
+                        // Filter logic
+                        if (category === 'All' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'flex';
+                            // Slight delay to re-trigger fade-up animation after display block
+                            setTimeout(() => {
+                                card.classList.add('visible');
+                            }, 50);
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
