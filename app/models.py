@@ -25,13 +25,24 @@ class User(db.Model):
 class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    domain = db.Column(db.String(120), unique=True, nullable=False)
+    description = db.Column(db.Text)
+    marquee_text = db.Column(db.Text, default="🔥 100% PREMIUM BEEF 🔥 FRESHLY BAKED BUNS 🔥 MELTED CHEEZE 🔥 ICE COLD SHAKES 🔥 CRAZY DEALS 🔥")
+    domain = db.Column(db.String(100), unique=True, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
     # Relationships
     menu_items = db.relationship('MenuItem', backref='restaurant', lazy=True, cascade="all, delete-orphan")
     orders = db.relationship('Order', backref='restaurant', lazy=True)
+    # One-to-many relationship with hero slides
+    hero_slides = db.relationship('HeroSlide', backref='restaurant', lazy=True, cascade="all, delete-orphan")
+
+class HeroSlide(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    image_url = db.Column(db.String(500), nullable=False)
+    heading = db.Column(db.String(200), nullable=False)
+    subtext = db.Column(db.Text)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class MenuItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)

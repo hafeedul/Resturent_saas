@@ -26,18 +26,39 @@
     </nav>
 
     <!-- Massive Fast Food Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>WELCOME TO {{ restaurant.name|upper }}</h1>
-            <p>{{ restaurant.description }}</p>
-            <a href="#menu" class="btn btn-primary btn-pulse" style="font-size: 1.5rem; padding: 1rem 3rem;">ORDER NOW</a>
-        </div>
+    <section class="hero-slider-container" style="position: relative; height: 70vh; min-height: 500px; overflow: hidden;">
+        {% if slides %}
+            {% for slide in slides %}
+                <div class="hero-slide {% if loop.first %}active{% endif %}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('{{ slide.image_url }}'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; opacity: {% if loop.first %}1{% else %}0{% endif %}; transition: opacity 1s ease-in-out; z-index: {% if loop.first %}1{% else %}0{% endif %};">
+                    <div class="container" style="text-align: center; position: relative; z-index: 2;">
+                        <h1 class="slide-title" style="font-size: 5rem; color: var(--color-primary); text-shadow: 3px 3px 6px rgba(0,0,0,0.9); margin-bottom: 1rem; transform: translateY({% if loop.first %}0{% else %}-30px{% endif %}); opacity: {% if loop.first %}1{% else %}0{% endif %}; transition: all 0.8s ease-out 0.3s;">{{ slide.heading }}</h1>
+                        <p class="slide-desc" style="font-size: 1.5rem; color: #FFFFFF; max-width: 800px; margin: 0 auto 2rem auto; transform: translateY({% if loop.first %}0{% else %}20px{% endif %}); opacity: {% if loop.first %}1{% else %}0{% endif %}; transition: all 0.8s ease-out 0.6s;">{{ slide.subtext }}</p>
+                        <a href="#menu" class="btn btn-primary btn-pulse" style="font-size: 1.5rem; padding: 1rem 3rem;">ORDER NOW</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <!-- Slide Indicators -->
+            <div class="slide-indicators" style="position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 10;">
+                {% for slide in slides %}
+                    <span class="indicator {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}" style="width: 12px; height: 12px; border-radius: 50%; background-color: {% if loop.first %}var(--color-primary){% else %}rgba(255,255,255,0.5){% endif %}; cursor: pointer; transition: background-color 0.3s;"></span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Fallback if no slides -->
+            <div class="hero" style="height: 100%; display: flex; align-items: center; justify-content: center;">
+                <div class="container" style="text-align: center;">
+                    <h1>WELCOME TO {{ restaurant.name|upper }}</h1>
+                    <p>{{ restaurant.description }}</p>
+                    <a href="#menu" class="btn btn-primary btn-pulse" style="font-size: 1.5rem; padding: 1rem 3rem;">ORDER NOW</a>
+                </div>
+            </div>
+        {% endif %}
     </section>
 
     <!-- Scrolling Marquee -->
     <div class="marquee-container">
         <div class="marquee-content">
-            🔥 100% PREMIUM BEEF 🔥 FRESHLY BAKED BUNS 🔥 MELTED CHEEZE 🔥 ICE COLD SHAKES 🔥 CRAZY DEALS 🔥 SATISFY YOUR CRAVINGS 🔥 100% PREMIUM BEEF 🔥 FRESHLY BAKED BUNS 🔥 MELTED CHEEZE 🔥 ICE COLD SHAKES 🔥 CRAZY DEALS 🔥
+            {{ restaurant.marquee_text }} &nbsp; &nbsp; &nbsp; {{ restaurant.marquee_text }} &nbsp; &nbsp; &nbsp; {{ restaurant.marquee_text }}
         </div>
     </div>
 
@@ -138,6 +159,75 @@
                     });
                 });
             });
+            // 3. Hero Image Slider Logic
+            const slides = document.querySelectorAll('.hero-slide');
+            const indicators = document.querySelectorAll('.indicator');
+            let currentSlide = 0;
+            const slideInterval = 5000; // 5 seconds per slide
+
+            function goToSlide(index) {
+                if(slides.length === 0) return;
+                
+                // Hide current
+                slides[currentSlide].style.opacity = '0';
+                slides[currentSlide].style.zIndex = '0';
+                slides[currentSlide].classList.remove('active');
+                
+                const currentTitle = slides[currentSlide].querySelector('.slide-title');
+                const currentDesc = slides[currentSlide].querySelector('.slide-desc');
+                if(currentTitle) {
+                    currentTitle.style.opacity = '0';
+                    currentTitle.style.transform = 'translateY(-30px)';
+                }
+                if(currentDesc) {
+                    currentDesc.style.opacity = '0';
+                    currentDesc.style.transform = 'translateY(20px)';
+                }
+
+                if(indicators.length > 0) {
+                    indicators[currentSlide].style.backgroundColor = 'rgba(255,255,255,0.5)';
+                }
+
+                currentSlide = index;
+
+                // Show new
+                slides[currentSlide].style.opacity = '1';
+                slides[currentSlide].style.zIndex = '1';
+                slides[currentSlide].classList.add('active');
+                
+                const newTitle = slides[currentSlide].querySelector('.slide-title');
+                const newDesc = slides[currentSlide].querySelector('.slide-desc');
+                if(newTitle) {
+                    newTitle.style.opacity = '1';
+                    newTitle.style.transform = 'translateY(0)';
+                }
+                if(newDesc) {
+                    newDesc.style.opacity = '1';
+                    newDesc.style.transform = 'translateY(0)';
+                }
+
+                if(indicators.length > 0) {
+                    indicators[currentSlide].style.backgroundColor = 'var(--color-primary)';
+                }
+            }
+
+            function nextSlide() {
+                if(slides.length <= 1) return;
+                let newIndex = (currentSlide + 1) % slides.length;
+                goToSlide(newIndex);
+            }
+
+            if(slides.length > 1) {
+                let slideTimer = setInterval(nextSlide, slideInterval);
+
+                indicators.forEach(ind => {
+                    ind.addEventListener('click', () => {
+                        clearInterval(slideTimer);
+                        goToSlide(parseInt(ind.getAttribute('data-index')));
+                        slideTimer = setInterval(nextSlide, slideInterval);
+                    });
+                });
+            }
         });
     </script>
 </body>

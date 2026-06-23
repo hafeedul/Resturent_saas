@@ -19,16 +19,42 @@ with app.app_context():
     print(f"Created user: {user.email}")
 
     # Seed dummy restaurant
-    from app.models import Restaurant
+    from app.models import Restaurant, HeroSlide
     cheezy_town = Restaurant(
         name="Cheezy Town", 
         description="The cheesiest, most mouth-watering burgers in town!", 
+        marquee_text="🔥 100% PREMIUM BEEF 🔥 FRESHLY BAKED BUNS 🔥 MELTED CHEEZE 🔥 ICE COLD SHAKES 🔥 CRAZY DEALS 🔥 SATISFY YOUR CRAVINGS 🔥",
         domain="cheezy.127.0.0.1:5000", 
         owner_id=user.id
     )
     db.session.add(cheezy_town)
     db.session.commit()
     print(f"Created restaurant: {cheezy_town.name} on domain {cheezy_town.domain}")
+
+    # Seed Hero Slides
+    slide1 = HeroSlide(
+        image_url="https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1600&auto=format&fit=crop",
+        heading="WELCOME TO CHEEZY TOWN",
+        subtext="The cheesiest, most mouth-watering burgers in town!",
+        restaurant_id=cheezy_town.id
+    )
+    slide2 = HeroSlide(
+        image_url="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1600&auto=format&fit=crop",
+        heading="THE CHEEZY MONSTER",
+        subtext="Quadruple cheddar cheese. Triple beef. Are you ready?",
+        restaurant_id=cheezy_town.id
+    )
+    slide3 = HeroSlide(
+        image_url="https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=1600&auto=format&fit=crop",
+        heading="ICE COLD SHAKES",
+        subtext="Thick, creamy, and loaded with chocolate chunks.",
+        restaurant_id=cheezy_town.id
+    )
+    db.session.add(slide1)
+    db.session.add(slide2)
+    db.session.add(slide3)
+    db.session.commit()
+    print("Created hero slides.")
 
     # Seed dummy menu items
     from app.models import MenuItem

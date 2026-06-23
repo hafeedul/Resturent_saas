@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, g, flash
 from flask import current_app as app
 from app import db
-from app.models import User, Restaurant, MenuItem, Order
+from app.models import User, Restaurant, MenuItem, Order, HeroSlide
 
 # The domain that hosts the main SaaS landing page
 # In production this might be 'restostitch.com', locally it's usually '127.0.0.1:5000' or 'localhost:5000'
@@ -29,7 +29,8 @@ def load_tenant():
             # Short-circuit the request for the homepage of the tenant
             if request.path == '/':
                 items = MenuItem.query.filter_by(restaurant_id=g.restaurant.id).all()
-                return render_template('storefront.html', restaurant=g.restaurant, items=items)
+                slides = HeroSlide.query.filter_by(restaurant_id=g.restaurant.id).all()
+                return render_template('storefront.html', restaurant=g.restaurant, items=items, slides=slides)
         else:
             return "Restaurant not found on this domain.", 404
 
@@ -303,6 +304,63 @@ def update_order_status(order_id):
             flash('Order status updated.')
             
     return redirect(url_for('orders'))
+
+@app.route('/settings', methods=['GET'])
+def settings():
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    slides = HeroSlide.query.filter_by(restaurant_id=restaurant.id).all()
+    return render_template('settings.html', restaurant=restaurant, slides=slides)
+
+@app.route('/settings/marquee', methods=['POST'])
+def update_marquee():
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    restaurant.marquee_text = request.form.get('marquee_text', '')
+    db.session.commit()
+    flash('Marquee text updated!')
+    return redirect(url_for('settings'))
+
+@app.route('/settings/slide/add', methods=['POST'])
+def add_slide():
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    image_url = request.form.get('image_url')
+    heading = request.form.get('heading')
+    subtext = request.form.get('subtext', '')
+    
+    if image_url and heading:
+        new_slide = HeroSlide(
+            image_url=image_url,
+            heading=heading,
+            subtext=subtext,
+            restaurant_id=restaurant.id
+        )
+        db.session.add(new_slide)
+        db.session.commit()
+        flash('Slide added successfully!')
+        
+    return redirect(url_for('settings'))
+
+@app.route('/settings/slide/delete/<int:slide_id>', methods=['POST'])
+def delete_slide(slide_id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+    user = db.session.get(User, session['user_id'])
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    slide = db.session.get(HeroSlide, slide_id)
+    if slide and slide.restaurant_id == restaurant.id:
+        db.session.delete(slide)
+        db.session.commit()
+        flash('Slide deleted.')
+        
+    return redirect(url_for('settings'))
 
 @app.route('/logout')
 def logout():
