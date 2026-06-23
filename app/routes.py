@@ -90,7 +90,21 @@ def dashboard():
         return redirect(url_for('login'))
         
     user = db.session.get(User, session['user_id'])
-    return render_template('dashboard.html', user=user)
+    restaurant = Restaurant.query.filter_by(owner_id=user.id).first()
+    
+    # Calculate Basic Analytics
+    total_orders = Order.query.filter_by(restaurant_id=restaurant.id).count()
+    menu_items_count = MenuItem.query.filter_by(restaurant_id=restaurant.id).count()
+    
+    # Get 5 most recent orders
+    recent_orders = Order.query.filter_by(restaurant_id=restaurant.id).order_by(Order.created_at.desc()).limit(5).all()
+    
+    return render_template('dashboard.html', 
+                           user=user, 
+                           restaurant=restaurant, 
+                           total_orders=total_orders, 
+                           menu_items_count=menu_items_count, 
+                           recent_orders=recent_orders)
 
 @app.route('/menu', methods=['GET', 'POST'])
 def menu():

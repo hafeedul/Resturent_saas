@@ -1,44 +1,57 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="app-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
-            <span class="form-label">MAIN</span>
-            <a href="/dashboard" class="sidebar-link active">Overview</a>
-            <a href="/orders" class="sidebar-link">Live Orders</a>
-            <a href="/menu" class="sidebar-link">Menu Editor</a>
-            <span class="form-label" style="margin-top: 1rem;">SETTINGS</span>
-            <a href="#" class="sidebar-link">Restaurant Profile</a>
-            <a href="#" class="sidebar-link">Billing</a>
-        </nav>
-    </aside>
-
-    <!-- Main Content Area -->
-    <div class="app-main">
-        <h2>Dashboard Overview</h2>
-        
-        <div class="grid grid-cols-3 mb-8">
-            <div class="card">
-                <p class="form-label">TODAY'S ORDERS</p>
-                <h3 style="margin: 0; font-size: 2rem;">24</h3>
-            </div>
-            <div class="card">
-                <p class="form-label">TODAY'S REVENUE</p>
-                <h3 style="margin: 0; font-size: 2rem;">$850.00</h3>
-            </div>
-            <div class="card">
-                <p class="form-label">ACTIVE MENU ITEMS</p>
-                <h3 style="margin: 0; font-size: 2rem;">42</h3>
-            </div>
+<div class="card">
+    <h2>Welcome back, {{ user.name }}!</h2>
+    <p class="text-muted">Here is an overview of {{ restaurant.name }} today.</p>
+    
+    <!-- Analytics Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+        <!-- Total Orders Card -->
+        <div style="background-color: var(--color-background); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; text-align: center;">
+            <p class="text-muted text-sm" style="margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Total Orders</p>
+            <h3 style="margin: 0.5rem 0 0 0; font-size: 2.5rem; color: var(--color-primary);">{{ total_orders }}</h3>
         </div>
-
-        <h3>Recent Activity</h3>
-        <div class="card">
-            <p class="text-muted">No recent activity to show yet. Setup your menu to start receiving orders!</p>
-            <a href="/menu" class="btn btn-primary" style="margin-top: 1rem;">Go to Menu Editor</a>
+        
+        <!-- Menu Items Card -->
+        <div style="background-color: var(--color-background); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; text-align: center;">
+            <p class="text-muted text-sm" style="margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Menu Items</p>
+            <h3 style="margin: 0.5rem 0 0 0; font-size: 2.5rem; color: var(--color-primary);">{{ menu_items_count }}</h3>
+        </div>
+        
+        <!-- Storefront Link -->
+        <div style="background-color: var(--color-background); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <p class="text-muted text-sm" style="margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 0.05em;">Your Storefront</p>
+            <a href="http://{{ restaurant.domain.split('.')[0] }}.localhost:5000" target="_blank" class="btn btn-primary" style="font-size: 0.875rem;">Visit Site ↗</a>
         </div>
     </div>
+    
+    <!-- Recent Orders Section -->
+    <h3 style="margin-top: 3rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">Recent Orders</h3>
+    
+    {% if recent_orders %}
+        <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
+            {% for order in recent_orders %}
+                <div class="flex justify-between items-center" style="border: 1px solid var(--color-border); border-radius: 8px; padding: 1rem;">
+                    <div>
+                        <strong>Order #{{ order.id }}</strong>
+                        <span class="text-muted text-sm ml-2">- {{ order.customer_name }}</span>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <span style="font-size: 0.875rem; padding: 0.25rem 0.5rem; border-radius: 4px; background-color: var(--color-surface); border: 1px solid var(--color-border);">
+                            {{ order.status }}
+                        </span>
+                        <strong>${{ "%.2f"|format(order.total_price) }}</strong>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <a href="/orders" class="btn" style="background: none; border: 1px solid var(--color-primary); color: var(--color-primary);">View All Orders</a>
+        </div>
+    {% else %}
+        <p class="text-muted text-center" style="padding: 2rem 0; background-color: var(--color-background); border-radius: 8px; margin-top: 1.5rem;">No orders yet. Share your storefront link to start getting orders!</p>
+    {% endif %}
+
 </div>
 {% endblock %}
