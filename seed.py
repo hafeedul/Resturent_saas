@@ -12,7 +12,7 @@ with app.app_context():
     print("Created new tables.")
 
     # Seed dummy user
-    admin = User(email="mario@restaurant.com")
+    admin = User(name="Mario Rossi", email="mario@restaurant.com")
     admin.set_password("password123")
     db.session.add(admin)
     db.session.commit()

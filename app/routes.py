@@ -48,6 +48,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        user_name = request.form.get('name')
         restaurant_name = request.form.get('restaurant_name')
         email = request.form.get('email').strip() if request.form.get('email') else ''
         password = request.form.get('password')
@@ -60,7 +61,7 @@ def register():
             flash('Email already registered')
             return redirect(url_for('register'))
             
-        user = User(email=email)
+        user = User(name=user_name, email=email)
         user.set_password(password)
         db.session.add(user)
         db.session.commit() # Commit to get user.id
