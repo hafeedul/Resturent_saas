@@ -227,8 +227,11 @@ def checkout():
         return "Not found", 404
         
     customer_name = request.form.get('customer_name', '').strip()
-    if not customer_name:
-        flash("Please enter your name to place the order.")
+    customer_phone = request.form.get('customer_phone', '').strip()
+    delivery_address = request.form.get('delivery_address', '').strip()
+    
+    if not customer_name or not customer_phone or not delivery_address:
+        flash("Please provide all required delivery details (Name, Phone, Address).")
         return redirect(url_for('cart'))
         
     cart_items = session.get('cart', {})
@@ -257,6 +260,9 @@ def checkout():
     # Create the Order
     new_order = Order(
         customer_name=customer_name,
+        customer_phone=customer_phone,
+        delivery_address=delivery_address,
+        payment_method="Cash", # Forced for MVP
         items_summary=", ".join(items_summary_list),
         total_price=total_price,
         status="Pending",

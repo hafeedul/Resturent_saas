@@ -45,11 +45,23 @@
                     </div>
 
                     <form action="/checkout" method="POST" style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1.5rem;">
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
                             <label for="customer_name" class="form-label" style="color: var(--color-text-muted);">Name for the Order</label>
-                            <input type="text" id="customer_name" name="customer_name" class="form-control" required placeholder="e.g. John Doe" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF;">
+                            <input type="text" id="customer_name" name="customer_name" class="form-control" required placeholder="e.g. John Doe" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%;">
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.25rem;">PLACE ORDER</button>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="customer_phone" class="form-label" style="color: var(--color-text-muted);">Phone Number</label>
+                            <input type="tel" id="customer_phone" name="customer_phone" class="form-control" required placeholder="e.g. 555-0198" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="delivery_address" class="form-label" style="color: var(--color-text-muted);">Delivery Address</label>
+                            <textarea id="delivery_address" name="delivery_address" class="form-control" required placeholder="123 Cheezy St, Apt 4" rows="3" style="padding: 1rem; font-size: 1.1rem; background-color: #121212; border: 1px solid #333; color: #FFF; width: 100%; resize: vertical;"></textarea>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label class="form-label" style="color: var(--color-text-muted);">Payment Method</label>
+                            <input type="text" class="form-control" value="Cash on Delivery" disabled style="padding: 1rem; font-size: 1.1rem; background-color: #1a1a1a; border: 1px solid #333; color: #888; width: 100%; cursor: not-allowed;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.25rem;">PLACE ORDER</button>
                     </form>
                 {% else %}
                     <p class="text-center text-muted" style="padding: 4rem 0; font-size: 1.2rem;">Your tray is empty.</p>

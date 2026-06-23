@@ -21,7 +21,13 @@
                 </div>
                 
                 <div class="mb-4">
-                    <p style="margin: 0;"><strong>Customer:</strong> {{ order.customer_name }}</p>
+                    <div style="background-color: var(--color-background); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                        <p style="margin: 0 0 0.25rem 0;"><strong>Customer:</strong> {{ order.customer_name }}</p>
+                        <p style="margin: 0 0 0.25rem 0;"><strong>Phone:</strong> {{ order.customer_phone }}</p>
+                        <p style="margin: 0 0 0.25rem 0;"><strong>Address:</strong> {{ order.delivery_address }}</p>
+                        <p style="margin: 0;"><strong>Payment:</strong> {{ order.payment_method }}</p>
+                    </div>
+                    
                     <p style="margin: 0.5rem 0 0 0;"><strong>Items:</strong></p>
                     <ul style="margin: 0.25rem 0 0 1.5rem; color: var(--color-text-light);">
                         {% for item in order.items_summary.split(', ') %}
