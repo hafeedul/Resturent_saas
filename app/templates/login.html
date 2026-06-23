@@ -6,16 +6,25 @@
         <h2 class="text-center">Welcome Back</h2>
         <p class="text-center">Sign in to your restaurant dashboard.</p>
         
-        <form action="/dashboard" method="GET" style="margin-top: 1.5rem;">
-            <!-- UI only: Using GET to /dashboard for demo purposes -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div style="color: var(--color-danger); margin-top: 1rem; text-align: center;">
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form action="/login" method="POST" style="margin-top: 1.5rem;">
             <div class="form-group">
                 <label class="form-label" for="email">Email Address</label>
-                <input type="email" id="email" class="form-input" placeholder="manager@restaurant.com" required>
+                <input type="email" id="email" name="email" class="form-input" placeholder="manager@restaurant.com" required>
             </div>
             
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
-                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required>
             </div>
             
             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign In</button>

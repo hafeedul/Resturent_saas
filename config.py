@@ -11,7 +11,7 @@ class Config:
     # Database Configuration
     # Uses DATABASE_URL if set (like in Render/Railway), otherwise falls back to local SQLite
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'database.db')
+        'sqlite:///' + os.path.join(basedir, 'saas.db')
     
     # Fix for SQLAlchemy 1.4+ with Heroku/Render Postgres URIs
     if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
