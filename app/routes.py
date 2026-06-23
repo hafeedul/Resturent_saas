@@ -137,7 +137,70 @@ def delete_menu_item(item_id):
 
 @app.route('/cart')
 def cart():
-    return render_template('cart.html')
+    # Only available on a tenant domain
+    if g.is_main_domain or not g.restaurant:
+        return "Not found", 404
+        
+    cart_items = session.get('cart', {})
+    
+    # Fetch actual menu items from DB to calculate totals securely
+    items_in_cart = []
+    total_price = 0.0
+    
+    for item_id_str, quantity in cart_items.items():
+        try:
+            item_id = int(item_id_str)
+            item = db.session.get(MenuItem, item_id)
+            if item and item.restaurant_id == g.restaurant.id:
+                line_total = item.price * quantity
+                total_price += line_total
+                items_in_cart.append({
+                    'item': item,
+                    'quantity': quantity,
+                    'line_total': line_total
+                })
+        except ValueError:
+            continue
+
+    return render_template('cart.html', restaurant=g.restaurant, items_in_cart=items_in_cart, total_price=total_price)
+
+@app.route('/cart/add/<int:item_id>', methods=['POST'])
+def add_to_cart(item_id):
+    if g.is_main_domain or not g.restaurant:
+        return "Not found", 404
+        
+    item = db.session.get(MenuItem, item_id)
+    if not item or item.restaurant_id != g.restaurant.id:
+        return "Item not found", 404
+        
+    cart = session.get('cart', {})
+    
+    # Add to cart or increment quantity
+    item_id_str = str(item_id)
+    if item_id_str in cart:
+        cart[item_id_str] += 1
+    else:
+        cart[item_id_str] = 1
+        
+    session['cart'] = cart
+    flash(f'Added {item.name} to your cart.')
+    
+    # Redirect back to storefront or cart depending on where they are
+    return redirect(request.referrer or url_for('home'))
+
+@app.route('/cart/remove/<int:item_id>', methods=['POST'])
+def remove_from_cart(item_id):
+    if g.is_main_domain or not g.restaurant:
+        return "Not found", 404
+        
+    cart = session.get('cart', {})
+    item_id_str = str(item_id)
+    
+    if item_id_str in cart:
+        cart.pop(item_id_str)
+        session['cart'] = cart
+        
+    return redirect(url_for('cart'))
 
 @app.route('/orders')
 def orders():

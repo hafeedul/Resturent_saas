@@ -18,6 +18,16 @@
 
     <!-- Tenant Content -->
     <main class="container mt-8">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div style="background-color: var(--color-surface); border-left: 4px solid var(--color-primary); padding: 1rem; margin-bottom: 2rem; border-radius: 4px;">
+              {% for message in messages %}
+                <p style="margin: 0;">{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
         <div class="text-center" style="padding: 3rem 0;">
             <h2>{{ restaurant.name }}</h2>
             <p style="font-size: 1.25rem; max-width: 600px; margin: 0 auto;">{{ restaurant.description }}</p>
@@ -39,6 +49,10 @@
                                 <strong style="color: var(--color-primary);">${{ "%.2f"|format(item.price) }}</strong>
                             </div>
                             <p class="text-muted text-sm" style="flex-grow: 1;">{{ item.description }}</p>
+                            
+                            <form action="/cart/add/{{ item.id }}" method="POST" style="margin-top: 1rem;">
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+                            </form>
                         </div>
                         {% endfor %}
                     </div>
